@@ -1,0 +1,99 @@
+.navbar-brand {
+  font-family: "DM Serif Text", serif;
+}
+
+:root {
+  --theme-colour: #fe6655;
+  --theme-colour-light: #f36655d9;
+  --theme-colour-error: #9001f0;
+  --theme-colour-success: #61f001;
+  /* May remove this in the future */
+  --theme-colour-alert: #01d8f0;
+  /* --theme-error-color: #ea3d15;
+     --theme-color-light: #ea3d15d9;
+    --theme-colour: #58ea15; */
+}
+
+.bg-theme {
+  background: var(--theme-colour);
+}
+
+.bg-theme-light {
+  background: var(--theme-colour-light);
+}
+
+.bg-theme-error {
+  background: var(--theme-colour-error);
+}
+
+.bg-theme-success {
+  background: var(--theme-colour-success);
+}
+
+.bg-theme-alert {
+  background: var(--theme-colour-alert);
+}
+
+.navbar-brand > span {
+  color: white;
+  font-size: larger;
+}
+
+.btn-theme-full {
+  border: 0px solid red;
+}
+
+.btn-theme {
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 0.375rem 0.75rem;
+  color: #fff;
+  -ms-user-select: none;
+  background: var(--theme-colour);
+  border-radius: 4px;
+  line-height: 22px;
+  vertical-align: middle;
+  text-align: center;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.btn-theme-outline {
+  border: solid 2px white;
+}
+
+.btn-theme:hover,
+.btn-theme-outline:hover {
+  box-shadow: 0px 2px 4px var(--theme-colour-light);
+}
+
+.main-footer {
+  color: #cecece;
+  background: #333;
+}
+
+.close {
+  border: 0px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.close:hover {
+  background-color: azure;
+}
+
+.add-card {
+  max-width: 400px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-normal {
+  cursor: initial;
+}
