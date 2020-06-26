@@ -1,4 +1,8 @@
 "use strict";
+// // // // // // // // // // //
+// //  Const declarations  // //
+// // // // // // // // // // //
+
 const actionsButton = document.querySelector("#actions");
 const actionCards = document.querySelectorAll(".card");
 const mainArea = document.querySelector("#main-area");
@@ -47,29 +51,23 @@ const performAction = (event) => {
     displayDeleteWorkbookCard();
     return;
   }
+  if (event.target.getAttribute("id") == "move-lesson") {
+    displayMoveLessonCard();
+    return;
+  }
+  if (event.target.getAttribute("id") == "move-module") {
+    displayMoveModuleCard();
+    return;
+  }
+  if (event.target.getAttribute("id") == "move-workbook") {
+    displayMoveWorkbookCard();
+    return;
+  }
 };
 
-const toastMessage = (text) => {
-  const toast = createDivWithClass("toast");
-  const toastHeader = createDivWithClass("toast-header");
-  toast.appendChild(toastHeader);
-  toastHeader.innerHTML = `<strong class="mr-auto">Information</strong>
-        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-        </button>`;
-  const toastBody = createDivWithClass("toast-body");
-  toastBody.innerText = text;
-  toast.appendChild(toastBody);
-  document.querySelector("#toast-area").appendChild(toast);
-  const alltoasts = document.querySelectorAll(".toast");
-  alltoasts.forEach((toast) => {
-    if (toast.classList.contains("hide")) {
-      toast.parentElement.removeChild(toast);
-    }
-  });
-  $(".toast").toast(true, false, 1500);
-  $(".toast").toast("show");
-};
+// // // // // // // // // // // // // // // // // //
+// // Functions to display/close various cards  // //
+// // // // // // // // // // // // // // // // // //
 
 const displaySubjectCard = () => {
   if (
@@ -90,7 +88,6 @@ const displayModuleCard = () => {
     document.querySelector("#add-module-card").classList.remove("d-none");
   }
 };
-
 const displayWorkbookCard = () => {
   if (
     document.querySelector("#add-workbook-card").classList.contains("d-none")
@@ -98,7 +95,6 @@ const displayWorkbookCard = () => {
     document.querySelector("#add-workbook-card").classList.remove("d-none");
   }
 };
-
 const displayDeleteSubjectCard = () => {
   if (
     document.querySelector("#delete-subject-card").classList.contains("d-none")
@@ -127,6 +123,28 @@ const displayDeleteWorkbookCard = () => {
     document.querySelector("#delete-workbook-card").classList.remove("d-none");
   }
 };
+const displayMoveLessonCard = () => {
+  if (
+    document.querySelector("#move-lesson-card").classList.contains("d-none")
+  ) {
+    document.querySelector("#move-lesson-card").classList.remove("d-none");
+  }
+};
+const displayMoveModuleCard = () => {
+  if (
+    document.querySelector("#move-module-card").classList.contains("d-none")
+  ) {
+    document.querySelector("#move-module-card").classList.remove("d-none");
+  }
+};
+const displayMoveWorkbookCard = () => {
+  if (
+    document.querySelector("#move-workbook-card").classList.contains("d-none")
+  ) {
+    document.querySelector("#move-workbook-card").classList.remove("d-none");
+  }
+};
+
 const closeCard = (event) => {
   if (event.target.classList.contains("close")) {
     event.target.parentElement.parentElement.parentElement.classList.add(
@@ -134,6 +152,10 @@ const closeCard = (event) => {
     );
   }
 };
+
+// // // // // // // // // // // // // // //
+// //  Display and hide nodes on click // //
+// // // // // // // // // // // // // // //
 
 const manageNodes = (event) => {
   if (event.target.classList.contains("subject")) {
@@ -175,6 +197,33 @@ const manageNodes = (event) => {
   }
 };
 
+// // // // // // // // // // // // //
+// //  Various utility functions // //
+// // // // // // // // // // // // //
+
+const toastMessage = (text) => {
+  const toast = createDivWithClass("toast");
+  const toastHeader = createDivWithClass("toast-header");
+  toast.appendChild(toastHeader);
+  toast.classList.add("m-1");
+  toastHeader.innerHTML = `<strong class="mr-auto">Information</strong>
+        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>`;
+  const toastBody = createDivWithClass("toast-body");
+  toastBody.innerText = text;
+  toast.appendChild(toastBody);
+  document.querySelector("#toast-area").appendChild(toast);
+  const alltoasts = document.querySelectorAll(".toast");
+  alltoasts.forEach((toast) => {
+    if (toast.classList.contains("hide")) {
+      toast.parentElement.removeChild(toast);
+    }
+  });
+  $(".toast").toast({ animation: true, autohide: true, delay: 3000 });
+  $(".toast").toast("show");
+};
+
 const getCorrectXHR = () => {
   let XHR;
 
@@ -206,13 +255,20 @@ const createOption = (id, text) => {
   return option;
 };
 
+// // // // // // // // // // // // // // // // // // // // // // // // // // // //
+// //  Load various nodes into the main area and add to the options in cards  // //
+// // // // // // // // // // // // // // // // // // // // // // // // // // // //
+
 const getWorkbooksForModule = (moduleUL, moduleId) => {
   const XHR = getCorrectXHR();
   XHR.onreadystatechange = () => {
     if (XHR.readyState == XHR.DONE && XHR.status == 200) {
       let response = JSON.parse(XHR.responseText);
-      const deleteWorkbookCardSelectElement = document.getElementById(
-        "workbook-to-delete"
+      const deleteWorkbookCardSelectElement = document.querySelector(
+        "#workbook-to-delete"
+      );
+      const moveWorkbookCardSelectElement = document.querySelector(
+        "#workbook-to-move"
       );
 
       [...response].forEach((workbook) => {
@@ -222,6 +278,9 @@ const getWorkbooksForModule = (moduleUL, moduleId) => {
         li.classList.add("list-group-item");
         li.classList.add("cursor-normal");
         deleteWorkbookCardSelectElement.appendChild(
+          createOption(workbook["workbook_id"], workbook["workbook_name"])
+        );
+        moveWorkbookCardSelectElement.appendChild(
           createOption(workbook["workbook_id"], workbook["workbook_name"])
         );
       });
@@ -237,13 +296,18 @@ const getModulesForLesson = (lessonUL, lessonId) => {
   XHR.onreadystatechange = () => {
     if (XHR.readyState == XHR.DONE && XHR.status == 200) {
       let response = JSON.parse(XHR.responseText);
-      const addWorkbookCardSelectElement = document.getElementById(
-        "module-for-workbook"
+      const addWorkbookCardSelectElement = document.querySelector(
+        "#module-for-workbook"
       );
-      const deleteModuleCardSelectElement = document.getElementById(
-        "module-to-delete"
+      const deleteModuleCardSelectElement = document.querySelector(
+        "#module-to-delete"
       );
-
+      const moveWorkbookCardSelectElement = document.querySelector(
+        "#module-to-move-workbook-to"
+      );
+      const moveModuleCardSelectElement = document.querySelector(
+        "#module-to-move"
+      );
       [...response].forEach((Module) => {
         const li = createLiWithText(Module["module_name"]);
         const moduleUL = document.createElement("ul");
@@ -261,6 +325,12 @@ const getModulesForLesson = (lessonUL, lessonId) => {
         deleteModuleCardSelectElement.appendChild(
           createOption(Module["module_id"], Module["module_name"])
         );
+        moveWorkbookCardSelectElement.appendChild(
+          createOption(Module["module_id"], Module["module_name"])
+        );
+        moveModuleCardSelectElement.appendChild(
+          createOption(Module["module_id"], Module["module_name"])
+        );
       });
 
       totalNodes += response.length;
@@ -275,11 +345,17 @@ const getLessonsForSub = (subjectUL, subId) => {
   XHR.onreadystatechange = () => {
     if (XHR.readyState == XHR.DONE && XHR.status == 200) {
       let response = JSON.parse(XHR.responseText);
-      const addModuleCardSelectElement = document.getElementById(
-        "lesson-for-module"
+      const addModuleCardSelectElement = document.querySelector(
+        "#lesson-for-module"
       );
       const deleteLessonCardSelectElement = document.querySelector(
         "#lesson-to-delete"
+      );
+      const moveModuleCardSelectElement = document.querySelector(
+        "#lesson-to-move-module-to"
+      );
+      const moveLessonCardSelectElement = document.querySelector(
+        "#lesson-to-move"
       );
 
       [...response].forEach((lesson) => {
@@ -299,6 +375,12 @@ const getLessonsForSub = (subjectUL, subId) => {
         deleteLessonCardSelectElement.appendChild(
           createOption(lesson["lesson_id"], lesson["lesson_name"])
         );
+        moveModuleCardSelectElement.appendChild(
+          createOption(lesson["lesson_id"], lesson["lesson_name"])
+        );
+        moveLessonCardSelectElement.appendChild(
+          createOption(lesson["lesson_id"], lesson["lesson_name"])
+        );
       });
       totalNodes += response.length;
     }
@@ -314,11 +396,14 @@ const getAllNodes = () => {
     if (XHR.readyState == XHR.DONE && XHR.status == 200) {
       let response = JSON.parse(XHR.responseText);
       const ul = document.createElement("ul");
-      const addLessonCardSelectElement = document.getElementById(
-        "subject-for-lesson"
+      const addLessonCardSelectElement = document.querySelector(
+        "#subject-for-lesson"
       );
-      const deleteSubjectCardSelectElement = document.getElementById(
-        "subject-to-delete"
+      const deleteSubjectCardSelectElement = document.querySelector(
+        "#subject-to-delete"
+      );
+      const moveLessonCardSelectElement = document.querySelector(
+        "#subject-to-move-lesson-to"
       );
 
       [...response].forEach((subject) => {
@@ -340,6 +425,9 @@ const getAllNodes = () => {
         deleteSubjectCardSelectElement.appendChild(
           createOption(subject["subject_id"], subject["subject_name"])
         );
+        moveLessonCardSelectElement.appendChild(
+          createOption(subject["subject_id"], subject["subject_name"])
+        );
       });
       totalNodes += response.length;
       mainArea.appendChild(ul);
@@ -349,21 +437,37 @@ const getAllNodes = () => {
   XHR.send();
 };
 
-const searchForKey = (event) => {
-  console.log(event);
-  const searchTerm = event.target.value;
-  console.log(searchTerm);
-  const allSubjects = mainArea.querySelectorAll(".subject");
+// // // // // // // // // // //
+// // Search functionality // //
+// // // // // // // // // // //
 
+const searchForKey = (event) => {
+  const searchTerm = event.target.value;
+  const allSubjects = mainArea.querySelectorAll(".subject");
+  if (searchTerm == "") {
+    allSubjects.forEach((subject) => {
+      subject.classList.remove("d-none");
+    });
+    return;
+  }
+  let countFound = 0;
   allSubjects.forEach((subject) => {
     if (subject.innerHTML.search(searchTerm) == -1) {
       if (!subject.classList.contains("d-none")) {
         subject.classList.add("d-none");
       }
-    } else if (subject.classList.contains("d-none")) {
-      subject.classList.remove("d-none");
+    } else {
+      ++countFound;
+      if (subject.classList.contains("d-none")) {
+        subject.classList.remove("d-none");
+      }
     }
   });
+  if (countFound > 0) {
+    toastMessage("Your search query has been found in the following subjects:");
+  } else {
+    toastMessage("Your search query has not been found");
+  }
 };
 
 // // // // // // // // // // // //
@@ -372,8 +476,6 @@ const searchForKey = (event) => {
 
 searchInput.addEventListener("change", searchForKey);
 mainArea.addEventListener("click", manageNodes);
-actionCards.forEach((card) => {
-  card.addEventListener("click", closeCard);
-});
+actionCards.forEach((card) => card.addEventListener("click", closeCard));
 actions.addEventListener("click", performAction);
 getAllNodes();

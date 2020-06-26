@@ -41,6 +41,9 @@
                         <div class="dropdown-item" id="delete-lesson">Delete lesson</div>
                         <div class="dropdown-item" id="delete-module">Delete module</div>
                         <div class="dropdown-item" id="delete-workbook">Delete workbook</div>
+                        <div class="dropdown-item" id="move-lesson">Move lesson</div>
+                        <div class="dropdown-item" id="move-module">Move module</div>
+                        <div class="dropdown-item" id="move-workbook">Move workbook</div>
                     </div>
                 </li>
             </ul>

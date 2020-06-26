@@ -92,7 +92,7 @@ class Home extends Controller
     {
         $this->viewModel = new HomeModel();
         if (isset($_POST['submit'])) {
-            $res = $this->viewModel->deleteSubject($_POST['subject'],isset($_POST['delete-lessons']));
+            $res = $this->viewModel->deleteSubject($_POST['subject'], isset($_POST['delete-lessons']));
         }
     }
     protected function deleteLesson()
@@ -114,6 +114,28 @@ class Home extends Controller
         $this->viewModel = new HomeModel();
         if (isset($_POST['submit'])) {
             $res = $this->viewModel->deleteWorkbook($_POST['workbook']);
+        }
+    }
+
+    protected function moveLesson()
+    {
+        $this->viewModel = new HomeModel();
+        if (isset($_POST['submit'])) {
+            $this->viewModel->moveLesson($_POST['subject'], $_POST['lesson']);
+        }
+    }
+    protected function moveModule()
+    {
+        $this->viewModel = new HomeModel();
+        if (isset($_POST['submit'])) {
+            $this->viewModel->moveModule($_POST['lesson'], $_POST['module']);
+        }
+    }
+    protected function moveWorkbook()
+    {
+        $this->viewModel = new HomeModel();
+        if (isset($_POST['submit'])) {
+            $this->viewModel->moveWorkbook($_POST['module'], $_POST['workbook']);
         }
     }
 }

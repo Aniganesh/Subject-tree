@@ -180,4 +180,57 @@ class HomeModel extends Model
             echo "Successfully deleted workbook<br/>";
         }
     }
-}
+
+    public function moveLesson($subjectTo, $lessonId)
+    {
+        $moveLessonQuery = "UPDATE `lesson` SET `subject_id`=:subject_id WHERE lesson_id = :lesson_id";
+        $this->query($moveLessonQuery);
+        $this->bind(":subject_id", $subjectTo);
+        $this->bind(":lesson_id", $lessonId);
+        $this->fetchResult();
+
+        $checkIfUpdatedQuery = "SELECT subject_id FROM `lesson` WHERE lesson_id = :lesson_id";
+        $this->query($checkIfUpdatedQuery);
+        $this->bind(":lesson_id", $lessonId);
+        $res = $this->fetchResult();
+        if ($res['subject_id'] == $subjectTo) {
+            echo "Lesson moved successfully <br/>";
+        } else {
+            echo "Failed to move lesson<br/>";
+        }
+    }
+
+    public function moveModule($lessonTo, $moduleId)
+    {
+        $moveModuleQuery = "UPDATE `module` SET `lesson_id`=:lesson_id WHERE module_id = :module_id";
+        $this->query($moveModuleQuery);
+        $this->bind(":module_id", $moduleId);
+        $this->bind(":lesson_id", $lessonTo);
+        $this->execute();
+        $checkIfUpdatedQuery = "SELECT lesson_id FROM `module` WHERE module_id = :module_id";
+        $this->query($checkIfUpdatedQuery);
+        $this->bind(":module_id", $moduleId);
+        if ($this->fetchResult()['lesson_id'] == $lessonTo) {
+            echo "Module moved successfully <br/>";
+        } else {
+            echo " Failed to move module<br/>";
+        }
+    }
+
+    public function moveWorkbook($moduleTo, $workbookId)
+    {
+        $moveWorkbookQuery = "UPDATE `workbook` SET `module_id`=:module_id WHERE workbook_id = :workbook_id";
+        $this->query($moveWorkbookQuery);
+        $this->bind(":workbook_id", $workbookId);
+        $this->bind(":module_id", $moduleTo);
+        $this->execute();
+        $checkIfUpdatedQuery = "SELECT module_id FROM `workbook` WHERE workbook_id = :workbook_id";
+        $this->query($checkIfUpdatedQuery);
+        $this->bind(":workbook_id", $workbookId);
+        if ($this->fetchResult()['module_id'] == $moduleTo) {
+            echo "Workbook moved successfully <br/>";
+        } else {
+            echo " Failed to move workbook<br/>";
+        }
+    }
+};
