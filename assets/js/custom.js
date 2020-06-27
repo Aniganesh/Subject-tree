@@ -463,6 +463,11 @@ const searchForKey = (event) => {
       if (subject.classList.contains("d-none")) {
         subject.classList.remove("d-none");
       }
+      subject.childNodes.forEach((node) => {
+        if (node.innerHTML.search(searchTerm) != -1) {
+          node.classList.remove("d-none");
+        }
+      });
     }
   });
   if (countFound > 0) {
