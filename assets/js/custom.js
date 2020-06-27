@@ -10,10 +10,7 @@ const addSubjectButton = document.querySelector("#add-subject-button");
 const addLessonButton = document.querySelector("#add-lesson-button");
 const addModuleButton = document.querySelector("#add-module-button");
 const addWorkbookButton = document.querySelector("#add-workbook-button");
-const totalNodesDiv = document.querySelector("#total-nodes");
 const searchInput = document.querySelector("#search-text");
-
-let totalNodes = 0;
 
 const performAction = (event) => {
   if (!event.target.classList.contains("dropdown-item")) {
@@ -284,7 +281,9 @@ const getWorkbooksForModule = (moduleUL, moduleId) => {
           createOption(workbook["workbook_id"], workbook["workbook_name"])
         );
       });
-      totalNodes += response.length;
+      const countSpan = document.createElement("span");
+      countSpan.innerHTML = "(" + response.length + ") workbooks";
+      moduleUL.parentElement.appendChild(countSpan);
     }
   };
   XHR.open("GET", "home/getWorkbooksForModule/" + moduleId, true);
@@ -332,8 +331,9 @@ const getModulesForLesson = (lessonUL, lessonId) => {
           createOption(Module["module_id"], Module["module_name"])
         );
       });
-
-      totalNodes += response.length;
+      const countSpan = document.createElement("span");
+      countSpan.innerHTML = "(" + response.length + ") modules";
+      lessonUL.parentElement.appendChild(countSpan);
     }
   };
   XHR.open("GET", "home/getModulesForLesson/" + lessonId, true);
@@ -360,13 +360,13 @@ const getLessonsForSub = (subjectUL, subId) => {
 
       [...response].forEach((lesson) => {
         const li = createLiWithText(lesson["lesson_name"]);
-        const lessonUl = document.createElement("ul");
+        const lessonUL = document.createElement("ul");
         subjectUL.classList.add("lesson");
-        lessonUl.classList.add("d-none");
-        lessonUl.classList.add("list-group-flush");
+        lessonUL.classList.add("d-none");
+        lessonUL.classList.add("list-group-flush");
         li.classList.add("list-group-item");
-        li.appendChild(lessonUl);
-        getModulesForLesson(lessonUl, lesson["lesson_id"]);
+        li.appendChild(lessonUL);
+        getModulesForLesson(lessonUL, lesson["lesson_id"]);
         subjectUL.appendChild(li);
 
         addModuleCardSelectElement.appendChild(
@@ -382,7 +382,9 @@ const getLessonsForSub = (subjectUL, subId) => {
           createOption(lesson["lesson_id"], lesson["lesson_name"])
         );
       });
-      totalNodes += response.length;
+      const countSpan = document.createElement("span");
+      countSpan.innerHTML = "(" + response.length + ") lessons";
+      subjectUL.parentElement.appendChild(countSpan);
     }
   };
 
@@ -396,6 +398,7 @@ const getAllNodes = () => {
     if (XHR.readyState == XHR.DONE && XHR.status == 200) {
       let response = JSON.parse(XHR.responseText);
       const ul = document.createElement("ul");
+
       const addLessonCardSelectElement = document.querySelector(
         "#subject-for-lesson"
       );
@@ -429,7 +432,6 @@ const getAllNodes = () => {
           createOption(subject["subject_id"], subject["subject_name"])
         );
       });
-      totalNodes += response.length;
       mainArea.appendChild(ul);
     }
   };
