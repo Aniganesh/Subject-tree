@@ -463,9 +463,22 @@ const searchForKey = (event) => {
       if (subject.classList.contains("d-none")) {
         subject.classList.remove("d-none");
       }
-      subject.childNodes.forEach((node) => {
-        if (node.innerHTML.search(searchTerm) != -1) {
-          node.classList.remove("d-none");
+      const lessons = subject.querySelectorAll("ul");
+      lessons.forEach((lesson) => {
+        if (lesson.innerHTML.search(searchTerm) != -1) {
+          if (lesson.classList.contains("d-none")) {
+            lesson.classList.remove("d-none");
+          }
+          const modules = lesson.querySelectorAll("ul");
+          modules.forEach((module) => {
+            if (module.innerHTML.search(searchTerm) != -1) {
+              if (module.classList.contains("d-none")) {
+                module.classList.remove("d-none");
+              }
+            }
+          });
+        } else {
+          lesson.classList.add("d-none");
         }
       });
     }
@@ -476,7 +489,6 @@ const searchForKey = (event) => {
     toastMessage("Your search query has not been found");
   }
 };
-
 // // // // // // // // // // // //
 // Attach event listeners here// //
 // // // // // // // // // // // //
